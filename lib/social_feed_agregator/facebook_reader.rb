@@ -39,13 +39,13 @@ module SocialFeedAgregator
             caption: post['caption'],
             story: post['story'],
             message: post['message'],      
-            created_at: post["created_time" ],
+            created_at: DateTime.parse(post["created_time"]),
             type: post['type']
           })
         end       
       end while not posts = posts.next_page
 
-    end
-   
+    end   
   end
+  Facebook = FacebookReader
 end

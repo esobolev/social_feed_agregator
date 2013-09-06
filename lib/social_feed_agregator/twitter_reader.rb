@@ -64,7 +64,7 @@ module SocialFeedAgregator
           
           permalink: "https://twitter.com/#{status.user.screen_name}/status/#{status.id}", #status.url,
           message: status.text,          
-          created_at: status.created_at,
+          created_at: DateTime.parse(status.created_at),
 
           type: tweet_type,
           picture_url: picture_url,

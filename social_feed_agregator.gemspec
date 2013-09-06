@@ -22,5 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
 
   spec.add_dependency("koala", "~> 1.6.0")
-  spec.add_dependency("twitter", "= 4.6.2")
+  spec.add_dependency("twitter", "~> 4.6.2")
+  spec.add_dependency("rest-client", "1.6.7")
+  spec.add_dependency("nokogiri", "~> 1.6.0")
 end

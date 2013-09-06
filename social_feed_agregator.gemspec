@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["eus@appfellas.co"]
   spec.description   = %q{Social Feed Agregator}
   spec.summary       = %q{Social Feed Agregator}
-  spec.homepage      = ""
+  spec.homepage      = "http://appfellas.nl"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)

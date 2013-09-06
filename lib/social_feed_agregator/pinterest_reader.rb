@@ -13,7 +13,7 @@ module SocialFeedAgregator
     def get_feeds(options={})
       @name = options[:name] if options[:name]
 
-      doc = Nokogiri::XML(RestClient.get("http://pinterest.com/#{@name}/feed.rss"))                       
+      doc = Nokogiri::XML(RestClient.get("http://pinterest.com/#{@name}/feed.rss?page=2"))                       
 
       doc.xpath('//item').map do |item|
 

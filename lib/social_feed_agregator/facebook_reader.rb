@@ -21,9 +21,11 @@ module SocialFeedAgregator
       graph = Koala::Facebook::API.new oauth.get_app_access_token      
       posts = graph.get_connections(@name, "posts")
       
+      feeds = []
       begin
-        posts.map do |post|       
-          Feed.new ({
+        posts.each do |post|       
+          puts post.inspect
+          feeds << Feed.new({
             feed_type: :facebook,
             feed_id: post['id'],
             
@@ -43,8 +45,8 @@ module SocialFeedAgregator
             type: post['type']
           })
         end       
-      end while not posts = posts.next_page
-
+      end while posts = posts.next_page
+      feeds
     end   
   end
   Facebook = FacebookReader

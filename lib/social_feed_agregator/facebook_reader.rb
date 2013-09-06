@@ -16,13 +16,18 @@ module SocialFeedAgregator
         
     def get_feeds(options={})
       @name = options[:name] if options[:name]
+      count = options[:count] || 25
 
       oauth = Koala::Facebook::OAuth.new(@app_id, @app_secret)      
       graph = Koala::Facebook::API.new oauth.get_app_access_token      
       posts = graph.get_connections(@name, "posts")
       
-      feeds = []
+      feeds, i, count_per_request = [], 0, 25
+
+      parts = (count.to_f / count_per_request).ceil
+
       begin
+        i+=1
         posts.each do |post|                 
           feeds << Feed.new({
             feed_type: :facebook,
@@ -44,7 +49,7 @@ module SocialFeedAgregator
             type: post['type']
           })
         end       
-      end while posts = posts.next_page
+      end while (posts = posts.next_page) && (i < parts)
       feeds
     end   
   end

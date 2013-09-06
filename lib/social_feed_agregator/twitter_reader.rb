@@ -1,8 +1,9 @@
+require "social_feed_agregator/base_reader"
 require "social_feed_agregator/feed"
 require "twitter"
 
 module SocialFeedAgregator
-  class TwitterReader
+  class TwitterReader < BaseReader
 
     attr_accessor :consumer_key, 
                   :consumer_secret,
@@ -11,6 +12,7 @@ module SocialFeedAgregator
                   :twitter_name
 
     def initialize(options={})
+      super(options)
       options.replace(SocialFeedAgregator.default_options.merge(options))
 
       @consumer_key = options[:twitter_consumer_key]
@@ -22,8 +24,9 @@ module SocialFeedAgregator
     end
         
     def get_feeds(options={})
+      super(options)
       @name = options[:name] if options[:name]
-      count = options[:count] || 20
+      count = options[:count] || 25
       
       client = ::Twitter.configure do |config|
         config.consumer_key = @consumer_key
@@ -45,9 +48,6 @@ module SocialFeedAgregator
 
         statuses.each do |status|                
           tweet_type, picture_url, link  = 'status', '', ''
-
-          # puts status.inspect
-          # puts
            
           if status.entities?                      
             if status.media.any?
@@ -63,7 +63,7 @@ module SocialFeedAgregator
             end
           end
 
-          feeds << Feed.new({
+          feed = Feed.new({
             feed_type: :twitter,
             feed_id: status.id.to_s,       
 
@@ -77,7 +77,9 @@ module SocialFeedAgregator
             type: tweet_type,
             picture_url: picture_url,
             link: link
-          })      
+          }) 
+          
+          block_given? ? yield(feed) : feeds << feed     
           
           new_count = count - count_per_request * i
           opts[:count] = new_count < count_per_request ? new_count : count_per_request

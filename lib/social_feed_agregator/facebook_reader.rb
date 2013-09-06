@@ -1,12 +1,14 @@
+require "social_feed_agregator/base_reader"
 require "social_feed_agregator/feed"
 require "koala"
 
 module SocialFeedAgregator
-  class FacebookReader
+  class FacebookReader < BaseReader
 
     attr_accessor :app_id, :app_secret, :name
 
     def initialize(options={})
+      super(options)
       options.replace(SocialFeedAgregator.default_options.merge(options))
 
       @name =       options[:facebook_user_name]
@@ -15,6 +17,7 @@ module SocialFeedAgregator
     end
         
     def get_feeds(options={})
+      super(options)
       @name = options[:name] if options[:name]
       count = options[:count] || 25
 
@@ -22,14 +25,17 @@ module SocialFeedAgregator
       graph = Koala::Facebook::API.new oauth.get_app_access_token      
       posts = graph.get_connections(@name, "posts")
       
-      feeds, i, count_per_request = [], 0, 25
+      feeds, i, count_per_request, items = [], 0, 25, 0
 
       parts = (count.to_f / count_per_request).ceil
 
       begin
         i+=1
-        posts.each do |post|                 
-          feeds << Feed.new({
+        posts.each do |post|    
+          items+=1
+          break if items > count
+
+          feed = Feed.new({
             feed_type: :facebook,
             feed_id: post['id'],
             
@@ -48,6 +54,9 @@ module SocialFeedAgregator
             created_at: DateTime.parse(post["created_time"]),
             type: post['type']
           })
+
+          block_given? ? yield(feed) : feeds << feed
+          
         end       
       end while (posts = posts.next_page) && (i < parts)
       feeds

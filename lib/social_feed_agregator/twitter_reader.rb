@@ -1,5 +1,5 @@
 require "social_feed_agregator/feed"
-require 'twitter'
+require "twitter"
 
 module SocialFeedAgregator
   class TwitterReader
@@ -24,7 +24,7 @@ module SocialFeedAgregator
       @name = options[:name] if options[:name]
       count = options[:count] if options[:count]
       
-      client = Twitter.configure do |config|
+      client = ::Twitter.configure do |config|
         config.consumer_key = @consumer_key
         config.consumer_secret = @consumer_secret
         config.oauth_token = @oauth_token
@@ -33,8 +33,27 @@ module SocialFeedAgregator
           
       statuses = client.user_timeline(@name, {count: count})
     
-      statuses.map do |status|        
-        puts status.inspect
+      statuses.map do |status|                
+        tweet_type = 'status'
+        picture_url = ''
+        link = ''
+
+        if status.entities?          
+          
+          if status.media.any?
+            photo_entity = status.media.first          
+            tweet_type = 'photo'
+            picture_url = photo_entity.media_url
+          end
+
+          if status.urls.any?
+            url_entity = status.urls.first          
+            tweet_type = 'link'
+            link = url_entity.url
+          end
+
+        end
+
 
         Feed.new ({
           feed_type: :twitter,
@@ -43,15 +62,18 @@ module SocialFeedAgregator
           user_id: status.user.id,
           user_name: status.user.screen_name,
           
-          permalink: "https://twitter.com/#{status.user.screen_name}/status/#{status.id.to_s}",
+          permalink: "https://twitter.com/#{status.user.screen_name}/status/#{status.id}", #status.url,
           message: status.text,          
           created_at: status.created_at,
 
-          description: status.user.description,
+          type: tweet_type,
+          picture_url: picture_url,
+          link: link
         })                
       end       
 
     end
    
   end
+  Twitter = TwitterReader
 end

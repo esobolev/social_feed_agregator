@@ -23,8 +23,7 @@ module SocialFeedAgregator
       
       feeds = []
       begin
-        posts.each do |post|       
-          puts post.inspect
+        posts.each do |post|                 
           feeds << Feed.new({
             feed_type: :facebook,
             feed_id: post['id'],

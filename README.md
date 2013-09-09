@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-    ## 1. Create reader for some social service (available Facebook, Twitter, Pinterest)
+    ## 1. Create reader for some social service (available Facebook, Twitter, Pinterest, GooglePlus)
 
     fb = SFA::Facebook.new ({      
       facebook_app_id:            "FACEBOOK_APP_ID", 
@@ -38,6 +38,11 @@ Or install it yourself as:
       pinterest_user_name:        "PINTEREST_USER_NAME"
     })
 
+    gp = SFA::Googleplus.new ({
+      googleplus_user_id: "GOOGLEPLUS_USER_ID",
+      googleplus_api_key: "GOOGLEPLUS_API_KEY"
+    })
+
 
     ## 2. Get data
 
@@ -55,6 +60,11 @@ Or install it yourself as:
 
     # Default 25
     pins.get_feeds(count: 2) do |feed|
+      res << feed
+    end
+
+    # Default 25
+    gp.get_feeds(count: 2) do |feed|
       res << feed
     end
 

@@ -10,7 +10,7 @@ module SocialFeedAgregator
                   :picture_url,    
                   :name,
                   :link, 
-                  :story, 
+                  # :story, 
                   :message,          # status message
                   :caption, 
                   :created_at, 
@@ -29,11 +29,12 @@ module SocialFeedAgregator
 
       @name  = options[:name]
       @link  = options[:link]
-      @story = options[:story]
+      # @story = options[:story]
       @message = options[:message]
       @caption = options[:caption]
       @created_at = options[:created_at]
       @type = options[:type]              
-    end    
+    end
+
   end
 end

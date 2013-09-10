@@ -34,8 +34,7 @@ module SocialFeedAgregator
         config.oauth_token = @oauth_token
         config.oauth_token_secret = @token_secret
       end
-          
-          
+                  
       feeds, i = [], 0
       count_per_request =  200 #::Twitter::REST::API::Timelines::MAX_TWEETS_PER_REQUEST      
 
@@ -47,37 +46,8 @@ module SocialFeedAgregator
         i+=1                
 
         statuses.each do |status|                
-          tweet_type, picture_url, link  = 'status', '', ''
-           
-          if status.entities?                      
-            if status.media.any?
-              photo_entity = status.media.first          
-              tweet_type = 'photo'
-              picture_url = photo_entity.media_url
-            end
-
-            if status.urls.any?
-              url_entity = status.urls.first          
-              tweet_type = 'link'
-              link = url_entity.url
-            end
-          end
-
-          feed = Feed.new({
-            feed_type: :twitter,
-            feed_id: status.id.to_s,       
-
-            user_id: status.user.id,
-            user_name: status.user.screen_name,
-            
-            permalink: "https://twitter.com/#{status.user.screen_name}/status/#{status.id}", #status.url,
-            message: status.text,          
-            created_at: status.created_at,
-
-            type: tweet_type,
-            picture_url: picture_url,
-            link: link
-          }) 
+          
+          feed = fill_feed status
           
           block_given? ? yield(feed) : feeds << feed     
           
@@ -88,7 +58,42 @@ module SocialFeedAgregator
       end
       feeds
     end
-   
+
+
+    private 
+    def fill_feed(status)
+      tweet_type, picture_url, link  = 'status', '', ''
+           
+      if status.entities?                      
+        if status.media.any?
+          photo_entity = status.media.first          
+          tweet_type = 'photo'
+          picture_url = photo_entity.media_url
+        end
+
+        if status.urls.any?
+          url_entity = status.urls.first          
+          tweet_type = 'link'
+          link = url_entity.url
+        end
+      end
+
+      feed = Feed.new(
+        feed_type: :twitter,
+        feed_id: status.id.to_s,       
+
+        user_id: status.user.id,
+        user_name: status.user.screen_name,
+        
+        permalink: "https://twitter.com/#{status.user.screen_name}/status/#{status.id}", #status.url,
+        message: status.text,          
+        created_at: status.created_at,
+
+        type: tweet_type,
+        picture_url: picture_url,
+        link: link
+      ) 
+    end   
   end
   Twitter = TwitterReader
 end

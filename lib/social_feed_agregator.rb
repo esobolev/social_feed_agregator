@@ -10,5 +10,5 @@ module SocialFeedAgregator
 
   class Exception < ::Exception; end  
 end
-
+  
 SFA=SocialFeedAgregator

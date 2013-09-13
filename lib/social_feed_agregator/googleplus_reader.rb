@@ -66,9 +66,10 @@ module SocialFeedAgregator
         user_name: post['actor']['displayName'],
         
         permalink: post['url'],
-        description: post['object']['content'],
+        message: post['object']['content'],
+        # description: post['object']['content'],
 
-        name: post['title'],
+        # name: post['title'],
 
         picture_url: picture_url,
         link: link,

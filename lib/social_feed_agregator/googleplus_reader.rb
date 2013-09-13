@@ -72,7 +72,7 @@ module SocialFeedAgregator
 
         picture_url: picture_url,
         link: link,
-        caption: caption,
+        # caption: caption,
         
         created_at: DateTime.parse(post['published']),
         type: post['object']['objectType']

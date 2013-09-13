@@ -44,7 +44,7 @@ module SocialFeedAgregator
         user_id: @name,
         user_name: @name,
 
-        name: item.xpath('title').inner_text,          
+        # name: item.xpath('title').inner_text,          
         permalink: item.xpath('link').inner_text,
         picture_url: desc[1],
         description: desc[2],

@@ -18,6 +18,8 @@ module SocialFeedAgregator
       super(options)
       @user_id = options[:user_id] if options[:user_id]
       count = options[:count] || 25
+
+      from_date = options[:from_date] || DateTime.new(1970,1,1) 
       
       feeds, i, count_per_request, items = [], 0, 100, 0
 
@@ -35,6 +37,12 @@ module SocialFeedAgregator
         data['items'].each do |post|    
           items+=1
           break if items > count          
+
+          # Break if the date is less
+          if DateTime.parse(post["published"]) <= from_date
+            i = parts
+            break
+          end
 
           feed = fill_feed post
 

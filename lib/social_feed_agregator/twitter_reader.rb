@@ -26,7 +26,9 @@ module SocialFeedAgregator
     def get_feeds(options={})
       super(options)
       @name = options[:name] if options[:name]
-      count = options[:count] || 25
+      count = options[:count] || 100
+
+      from_date = options[:from_date] || DateTime.new(1970,1,1) 
       
       client = ::Twitter.configure do |config|
         config.consumer_key = @consumer_key
@@ -46,6 +48,12 @@ module SocialFeedAgregator
         i+=1                
 
         statuses.each do |status|                
+          
+          # Break if the date is less
+          if status.created_at <= from_date
+            i = parts
+            break
+          end
           
           feed = fill_feed status
           

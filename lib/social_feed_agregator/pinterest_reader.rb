@@ -16,6 +16,8 @@ module SocialFeedAgregator
       super(options)
       @name = options[:name]  if options[:name]
       count = options[:count] || 25
+      from_date = options[:from_date] || DateTime.new(1970,1,1) 
+
       feeds = []
       items = 0
 
@@ -24,6 +26,11 @@ module SocialFeedAgregator
       doc.xpath('//item').each do |item|
         items += 1
         break if items > count
+
+        # Break if the date is less
+        if DateTime.parse(item.xpath('pubDate').inner_text) <= from_date
+          break
+        end
 
         feed = fill_feed item
         

@@ -1,5 +1,6 @@
 require "social_feed_agregator/base_reader"
 require "social_feed_agregator/feed"
+require 'rest_client'
 
 module SocialFeedAgregator
   class GoogleplusReader < BaseReader
